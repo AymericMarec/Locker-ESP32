@@ -21,6 +21,15 @@ void RFID_Connect(){
 boolean PICC_IsNewCardPresent(){
     return mfrc522.PICC_IsNewCardPresent();
 }
+
+void PICC_HaltA(){
+    mfrc522.PICC_HaltA();
+}
+
+void PCD_StopCrypto1(){
+    mfrc522.PCD_StopCrypto1();
+}
+
 boolean PICC_ReadCardSerial(){
     return mfrc522.PICC_ReadCardSerial();
 }
