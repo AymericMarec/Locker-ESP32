@@ -8,4 +8,6 @@ boolean PICC_IsNewCardPresent();
 boolean PICC_ReadCardSerial();
 void PrintUID();
 String GetUID();
+void PCD_StopCrypto1();
+void PICC_HaltA();
 #endif

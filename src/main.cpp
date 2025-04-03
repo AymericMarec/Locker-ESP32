@@ -12,18 +12,24 @@ void setup() {
   ConnectWifi();
   ConnectMQTT();
   RFID_Connect();
-  SendMessage("ntm max");
 
   
 }
 void loop(){
-  if ( ! PICC_IsNewCardPresent()) {
-    return;
- }
+  static unsigned long lastScanTime = 0;
+  const unsigned long scanCooldown = 3000; 
 
- if ( ! PICC_ReadCardSerial()) {
-    return;
- }
+  if (millis() - lastScanTime < scanCooldown) {
+    return; 
+  }
 
- Serial.println(GetUID());
+  if (!PICC_IsNewCardPresent() || !PICC_ReadCardSerial()) {
+    return;
+  }
+
+  Serial.println(GetUID());
+
+  lastScanTime = millis(); 
+  PICC_HaltA();    
+  PCD_StopCrypto1();
 }
