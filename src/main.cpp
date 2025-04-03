@@ -12,11 +12,10 @@ void setup() {
   ConnectWifi();
   ConnectMQTT();
   RFID_Connect();
-  SendMessage("ntm max");
-
-  
+  Subscribe("response");
 }
 void loop(){
+  ListenMessage();
   if ( ! PICC_IsNewCardPresent()) {
     return;
  }

@@ -41,9 +41,34 @@ void ConnectMQTT(){
 }
 
 
-void SendMessage(char message[]){
-  mqttClient.beginMessage("mon/topic");
+void SendMessage(char message[],char topic[]){
+  mqttClient.beginMessage(topic);
   mqttClient.print(message);
   mqttClient.endMessage();
   Serial.println("message send");
 }
+
+void Subscribe(char topic[]){
+  mqttClient.subscribe(topic);
+}
+
+void ListenMessage(){
+  mqttClient.poll();
+  if (mqttClient.available()) {
+    String Message;
+    while (mqttClient.available()) {
+        Message += (char)mqttClient.read();
+    }
+    Serial.println(Message);
+  } 
+}
+  // mqttClient.poll();
+  // if (mqttClient.parseMessage()){
+  //   Serial.print("Message reçu sur ");
+  //   Serial.println(mqttClient.messageTopic());
+  //   Serial.print("Contenu du message : ");
+  //   while (mqttClient.available()) {
+  //     Serial.print((char)mqttClient.read());
+  //   }
+  //   Serial.println();
+  // }
