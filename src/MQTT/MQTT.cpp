@@ -1,11 +1,15 @@
 #include <WiFi.h>
 #include <ArduinoMqttClient.h>
 
+#define RED_LED 26
+#define GREEN_LED 27
+
 const char* password = "TartelettE";
 const char* ssid = "Moi";
 
 const char broker[] = "10.33.75.220";
 int        port     = 1883;
+
 
 WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
@@ -41,7 +45,7 @@ void ConnectMQTT(){
 }
 
 
-void SendMessage(char message[],char topic[]){
+void SendMessage(String message,char topic[]){
   mqttClient.beginMessage(topic);
   mqttClient.print(message);
   mqttClient.endMessage();
@@ -60,15 +64,20 @@ void ListenMessage(){
         Message += (char)mqttClient.read();
     }
     Serial.println(Message);
+    // if(mqttClient.messageTopic() == "response"){
+      if(Message == "true"){
+        Serial.println("green light");
+        digitalWrite(RED_LED, HIGH);
+      }else if(Message == "true") {
+        Serial.println("red light");
+        digitalWrite(GREEN_LED, HIGH);
+      }
+      delay(500);
+      digitalWrite(RED_LED, LOW);
+      digitalWrite(GREEN_LED, LOW);
+    // }
+
+
+    Serial.println(Message);
   } 
 }
-  // mqttClient.poll();
-  // if (mqttClient.parseMessage()){
-  //   Serial.print("Message reçu sur ");
-  //   Serial.println(mqttClient.messageTopic());
-  //   Serial.print("Contenu du message : ");
-  //   while (mqttClient.available()) {
-  //     Serial.print((char)mqttClient.read());
-  //   }
-  //   Serial.println();
-  // }

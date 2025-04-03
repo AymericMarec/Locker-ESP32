@@ -3,10 +3,12 @@
 #include "MQTT/MQTT.hpp"
 #include "RFID/RFID.hpp"
 
-#define LED_PIN 26
+#define RED_LED 26
+#define GREEN_LED 27
 
 void setup() {
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
   Serial.begin(9600);
 
   ConnectWifi();
@@ -16,6 +18,7 @@ void setup() {
 }
 
 void loop(){
+  ListenMessage();
   static unsigned long lastScanTime = 0;
   const unsigned long scanCooldown = 3000; 
 
@@ -26,7 +29,7 @@ void loop(){
   if (!PICC_IsNewCardPresent() || !PICC_ReadCardSerial()) {
     return;
   }
-
+  SendMessage(GetUID(),"scan");
   Serial.println(GetUID());
 
   lastScanTime = millis(); 

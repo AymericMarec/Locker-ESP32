@@ -3,7 +3,7 @@
 
 void ConnectWifi();
 void ConnectMQTT();
-void SendMessage(char message[],char topic[]);
+void SendMessage(String message,char topic[]);
 void Subscribe(char topic[]);
 void ListenMessage();
 
