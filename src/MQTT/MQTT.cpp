@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <ArduinoMqttClient.h>
+#include <PubSubClient.h>
 
 #define RED_LED 26
 #define GREEN_LED 27
@@ -7,12 +8,9 @@
 const char* password = "TartelettE";
 const char* ssid = "Moi";
 
-const char broker[] = "10.33.75.220";
-int        port     = 1883;
-
 
 WiFiClient wifiClient;
-MqttClient mqttClient(wifiClient);
+PubSubClient client(wifiClient);
 
 void ConnectWifi(){
   WiFi.mode(WIFI_STA);
@@ -29,55 +27,56 @@ void ConnectWifi(){
   Serial.println(WiFi.localIP());
 }
 
-void ConnectMQTT(){
-  Serial.print("Attempting to connect to the MQTT broker: ");
-  Serial.println(broker);
-
-  if (!mqttClient.connect(broker, port)) {
-    Serial.print("MQTT connection failed! Error code = ");
-    Serial.println(mqttClient.connectError());
-
-    while (1);
+void GetMessage(char* topic, byte* payload, unsigned int length){
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] "); 
+  for (int i = 0; i < length; i++)
+  {
+    Serial.print((char)payload[i]);
   }
-
-  Serial.println("You're connected to the MQTT broker!");
   Serial.println();
+  if ((char)payload[0] == 't' && (char)payload[1] == 'r'&& (char)payload[2] == 'u'&& (char)payload[3] == 'e')
+  {
+    digitalWrite(GREEN_LED, HIGH);
+    Serial.println("on");
+    delay(600);
+    digitalWrite(GREEN_LED, LOW);
+  }
+  if ((char)payload[0] == 'f' && (char)payload[1] == 'a'&& (char)payload[2] == 'l'&& (char)payload[3] == 's'&& (char)payload[4] == 'e')
+  {
+    digitalWrite(RED_LED, HIGH);
+    Serial.println("off");
+    delay(600);
+    digitalWrite(RED_LED, LOW);
+  }
+  Serial.println();
+  return;
 }
 
+void ConnectMQTT(){
+  client.setServer("10.33.75.211", 1883);
+  client.setCallback(GetMessage);
 
-void SendMessage(String message,char topic[]){
-  mqttClient.beginMessage(topic);
-  mqttClient.print(message);
-  mqttClient.endMessage();
+  client.connect("ESP32_clientID");
+  {
+    Serial.println("connected to MQTT");
+    if (!client.connected())
+    {
+      ConnectMQTT();
+    }
+  }
+}
+
+void Subscribe(String topic){
+  client.subscribe(topic.c_str());
+}
+
+void SendMessage(String message,String topic){
+  client.publish(topic.c_str(),message.c_str());
   Serial.println("message send");
 }
 
-void Subscribe(char topic[]){
-  mqttClient.subscribe(topic);
-}
-
-void ListenMessage(){
-  mqttClient.poll();
-  if (mqttClient.available()) {
-    String Message;
-    while (mqttClient.available()) {
-        Message += (char)mqttClient.read();
-    }
-    Serial.println(Message);
-    // if(mqttClient.messageTopic() == "response"){
-      if(Message == "true"){
-        Serial.println("green light");
-        digitalWrite(RED_LED, HIGH);
-      }else if(Message == "true") {
-        Serial.println("red light");
-        digitalWrite(GREEN_LED, HIGH);
-      }
-      delay(500);
-      digitalWrite(RED_LED, LOW);
-      digitalWrite(GREEN_LED, LOW);
-    // }
-
-
-    Serial.println(Message);
-  } 
+void Loop(){
+  client.loop();
 }

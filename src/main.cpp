@@ -18,7 +18,7 @@ void setup() {
 }
 
 void loop(){
-  ListenMessage();
+  Loop();
   static unsigned long lastScanTime = 0;
   const unsigned long scanCooldown = 3000; 
 

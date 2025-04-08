@@ -3,8 +3,9 @@
 
 void ConnectWifi();
 void ConnectMQTT();
-void SendMessage(String message,char topic[]);
-void Subscribe(char topic[]);
-void ListenMessage();
-
+void GetMessage(char* topic, byte* payload, unsigned int length);
+void ConnectMQTT();
+void Subscribe(String topic);
+void SendMessage(String message,String topic);
+void Loop();
 #endif
