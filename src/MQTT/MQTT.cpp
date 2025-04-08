@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <ArduinoMqttClient.h>
 #include <PubSubClient.h>
+#include "Servo/Servo.hpp"
 
 #define RED_LED 26
 #define GREEN_LED 27
@@ -31,26 +32,26 @@ void GetMessage(char* topic, byte* payload, unsigned int length){
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] "); 
+  Serial.println("");
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
   }
-  Serial.println();
+  Serial.println("");
   if ((char)payload[0] == 't' && (char)payload[1] == 'r'&& (char)payload[2] == 'u'&& (char)payload[3] == 'e')
   {
-    digitalWrite(GREEN_LED, HIGH);
     Serial.println("on");
+    digitalWrite(GREEN_LED, HIGH);
     delay(600);
     digitalWrite(GREEN_LED, LOW);
-  }
-  if ((char)payload[0] == 'f' && (char)payload[1] == 'a'&& (char)payload[2] == 'l'&& (char)payload[3] == 's'&& (char)payload[4] == 'e')
+
+  }else if ((char)payload[0] == 'f' && (char)payload[1] == 'a'&& (char)payload[2] == 'l'&& (char)payload[3] == 's'&& (char)payload[4] == 'e')
   {
-    digitalWrite(RED_LED, HIGH);
     Serial.println("off");
+    digitalWrite(RED_LED, HIGH);
     delay(600);
     digitalWrite(RED_LED, LOW);
   }
-  Serial.println();
   return;
 }
 

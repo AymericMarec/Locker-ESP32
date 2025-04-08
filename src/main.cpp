@@ -2,6 +2,8 @@
 
 #include "MQTT/MQTT.hpp"
 #include "RFID/RFID.hpp"
+#include "Servo/Servo.hpp"
+#include <ESP32Servo.h>
 
 #define RED_LED 26
 #define GREEN_LED 27
@@ -11,6 +13,7 @@ void setup() {
   pinMode(GREEN_LED, OUTPUT);
   Serial.begin(9600);
 
+  InitServo();
   ConnectWifi();
   ConnectMQTT();
   RFID_Connect();
@@ -29,8 +32,7 @@ void loop(){
   if (!PICC_IsNewCardPresent() || !PICC_ReadCardSerial()) {
     return;
   }
-  SendMessage(GetUID(),"scan");
-  Serial.println(GetUID());
+  Scan();
 
   lastScanTime = millis(); 
   PICC_HaltA();    

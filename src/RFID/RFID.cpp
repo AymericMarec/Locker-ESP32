@@ -1,5 +1,7 @@
 #include "SPI.h"
 #include "MFRC522.h"
+#include "MQTT/MQTT.hpp"
+#include "Servo/Servo.hpp"
 
 #define RST_PIN   22  
 #define SS_PIN    21  
@@ -43,4 +45,13 @@ String GetUID(){
         if (i < mfrc522.uid.size - 1) uidString += ":";
     }
     return uidString;
+}
+void Scan(){
+    if(!IsOpen()){
+        SendMessage(GetUID(),"scan");
+        Serial.print("UID : ");
+        Serial.println(GetUID());
+        return;
+    }
+    CloseLocker();
 }

@@ -10,4 +10,5 @@ void PrintUID();
 String GetUID();
 void PCD_StopCrypto1();
 void PICC_HaltA();
+void Scan();
 #endif
