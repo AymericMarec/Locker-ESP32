@@ -29,28 +29,27 @@ void ConnectWifi(){
 }
 
 void GetMessage(char* topic, byte* payload, unsigned int length){
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] "); 
-  Serial.println("");
-  for (int i = 0; i < length; i++)
-  {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println("");
-  if ((char)payload[0] == 't' && (char)payload[1] == 'r'&& (char)payload[2] == 'u'&& (char)payload[3] == 'e')
-  {
-    Serial.println("on");
+  Serial.print("[" + String(topic) + "]");
+  String message = String((char*)payload).substring(0, length);
+  Serial.println(message);
+
+  if (message == "allowed"){
     digitalWrite(GREEN_LED, HIGH);
+    OpenLocker();
     delay(600);
     digitalWrite(GREEN_LED, LOW);
-
-  }else if ((char)payload[0] == 'f' && (char)payload[1] == 'a'&& (char)payload[2] == 'l'&& (char)payload[3] == 's'&& (char)payload[4] == 'e')
-  {
-    Serial.println("off");
+  }else if (message == "denied"){
     digitalWrite(RED_LED, HIGH);
     delay(600);
     digitalWrite(RED_LED, LOW);
+  }else if (message == "close"){
+    CloseLocker();
+  }else if (message == "green"){
+    digitalWrite(GREEN_LED, HIGH);
+    delay(600);
+    digitalWrite(GREEN_LED, LOW);
+  }else {
+    Serial.println("Message inconnu");
   }
   return;
 }
@@ -58,7 +57,6 @@ void GetMessage(char* topic, byte* payload, unsigned int length){
 void ConnectMQTT(){
   client.setServer("10.33.75.211", 1883);
   client.setCallback(GetMessage);
-
   client.connect("ESP32_clientID");
   {
     Serial.println("connected to MQTT");
@@ -75,7 +73,6 @@ void Subscribe(String topic){
 
 void SendMessage(String message,String topic){
   client.publish(topic.c_str(),message.c_str());
-  Serial.println("message send");
 }
 
 void Loop(){

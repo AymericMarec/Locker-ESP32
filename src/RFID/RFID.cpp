@@ -17,7 +17,6 @@ void RFID_Connect(){
     mfrc522.PCD_Init();
     delay(1000);
     mfrc522.PCD_DumpVersionToSerial();
-    Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
 }
 
 boolean PICC_IsNewCardPresent(){
@@ -49,7 +48,7 @@ String GetUID(){
 void Scan(){
     if(!IsOpen()){
         SendMessage(GetUID(),"scan");
-        Serial.print("UID : ");
+        Serial.print("UID Scan : ");
         Serial.println(GetUID());
         return;
     }
