@@ -2,6 +2,7 @@
 #include "MFRC522.h"
 #include "MQTT/MQTT.hpp"
 #include "Servo/Servo.hpp"
+#include <WiFi.h>
 
 #define RST_PIN   22  
 #define SS_PIN    21  
@@ -47,10 +48,11 @@ String GetUID(){
 }
 void Scan(){
     if(!IsOpen()){
-        SendMessage(GetUID(),"scan");
+        SendMessage(WiFi.macAddress()+"|"+GetUID(),"scan");
         Serial.print("UID Scan : ");
         Serial.println(GetUID());
         return;
     }
+    SendMessage(WiFi.macAddress()+"|"+"close","door");
     CloseLocker();
 }

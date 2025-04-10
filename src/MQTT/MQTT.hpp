@@ -8,4 +8,5 @@ void ConnectMQTT();
 void Subscribe(String topic);
 void SendMessage(String message,String topic);
 void Loop();
+void IsPair();
 #endif

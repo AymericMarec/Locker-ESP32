@@ -6,27 +6,9 @@
 #define RED_LED 26
 #define GREEN_LED 27
 
-const char* password = "TartelettE";
-const char* ssid = "Moi";
-
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-
-void ConnectWifi(){
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  Serial.println("\nConnecting");
-
-  while(WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
-    delay(100);
-  }
-  
-  Serial.println("\nConnected to the WiFi network");
-  Serial.print("Local ESP32 IP: ");
-  Serial.println(WiFi.localIP());
-}
 
 void GetMessage(char* topic, byte* payload, unsigned int length){
   Serial.print("[" + String(topic) + "]");
@@ -77,4 +59,7 @@ void SendMessage(String message,String topic){
 
 void Loop(){
   client.loop();
+}
+void IsPair(){
+  SendMessage(WiFi.macAddress(),"pair");
 }

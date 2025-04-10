@@ -2,8 +2,10 @@
 
 #include "MQTT/MQTT.hpp"
 #include "RFID/RFID.hpp"
+#include "WiFi/WiFi.hpp"
 #include "Servo/Servo.hpp"
 #include <ESP32Servo.h>
+#include <WiFi.h>
 
 #define RED_LED 26
 #define GREEN_LED 27
@@ -13,11 +15,12 @@ void setup() {
   pinMode(GREEN_LED, OUTPUT);
   Serial.begin(9600);
 
+  IsPair();
   InitServo();
-  ConnectWifi();
+  ConnectWiFi();
   ConnectMQTT();
   RFID_Connect();
-  Subscribe("response");
+  Subscribe("response/"+WiFi.macAddress());
 }
 
 void loop(){
