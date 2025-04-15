@@ -15,11 +15,12 @@ void setup() {
   pinMode(GREEN_LED, OUTPUT);
   Serial.begin(9600);
 
-  IsPair();
+
   InitServo();
   ConnectWiFi();
   ConnectMQTT();
   RFID_Connect();
+  IsPair();
   Subscribe("response/"+WiFi.macAddress());
 }
 

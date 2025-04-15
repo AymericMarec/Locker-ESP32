@@ -37,7 +37,7 @@ void GetMessage(char* topic, byte* payload, unsigned int length){
 }
 
 void ConnectMQTT(){
-  client.setServer("10.33.75.211", 1883);
+  client.setServer("10.33.75.208", 1883);
   client.setCallback(GetMessage);
   client.connect("ESP32_clientID");
   {
